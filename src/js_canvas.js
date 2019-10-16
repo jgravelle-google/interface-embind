@@ -1,4 +1,4 @@
-let lastTime = Date.now();
+let lastTime = performance.now();
 let t = 0.0;
 
 function rects(ctx) {
@@ -55,14 +55,14 @@ function image(ctx) {
 function framerate(ctx, dT) {
   ctx.font = '20px sans';
   ctx.fillStyle = '#444444';
-  const ms = (1000 * dT) | 0;
-  ctx.fillText('Frame time: ' + ms + 'ms', 600, 585)
+  const us = (dT * 1000) | 0;
+  ctx.fillText('Frame time: ' + us + 'us', 560, 585)
 }
 
 function frame() {
-  let curTime = Date.now();
-  let dT = (curTime - lastTime) / 1000;
-  lastTime = curTime;
+  let startTime = performance.now();
+  let dT = (startTime - lastTime) / 1000;
+  lastTime = startTime;
   t += dT;
 
   const canvas = document.getElementById('canvas');
@@ -71,8 +71,9 @@ function frame() {
 
   rects(ctx);
   sines(ctx);
-  image(ctx);
-  framerate(ctx, dT);
+  // image(ctx);
+  let endTime = performance.now();
+  framerate(ctx, endTime - startTime);
 
   requestAnimationFrame(frame);
 }

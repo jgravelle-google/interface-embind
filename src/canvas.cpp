@@ -14,7 +14,7 @@ void init() {
   val canvas = document.call<val>("getElementById", val("canvas"));
   ctx = canvas.call<val>("getContext", val("2d"));
 
-  lastTime = val::global("Date").call<double>("now");
+  lastTime = val::global("performance").call<double>("now");
 }
 
 void rects(val ctx) {
@@ -75,25 +75,26 @@ void naiveImage(val ctx) {
 void framerate(val ctx, double dT) {
   ctx.set("font", val("20px sans"));
   ctx.set("fillStyle", val("#444444"));
-  int ms = 1000.0 * dT;
   char *msg = (char*)alloca(256);
-  snprintf(msg, 256, "Frame time: %dms", ms);
-  ctx.call<void>("fillText", val(std::string(msg)), 600, 585);
+  int us = 1000.0 * dT;
+  snprintf(msg, 256, "Frame time: %dus", us);
+  ctx.call<void>("fillText", val(std::string(msg)), 560, 585);
   // free(msg);
 }
 
 void frame() {
-  double curTime = val::global("Date").call<double>("now");
-  double dT = (curTime - lastTime) / 1000.0;
-  lastTime = curTime;
+  double startTime = val::global("performance").call<double>("now");
+  double dT = (startTime - lastTime) / 1000.0;
+  lastTime = startTime;
   t += dT;
 
   ctx.call<void>("clearRect", 0, 0, 800, 600);
 
   rects(ctx);
   sines(ctx);
-  naiveImage(ctx);
-  framerate(ctx, dT);
+  // naiveImage(ctx);
+  double endTime = val::global("performance").call<double>("now");
+  framerate(ctx, endTime - startTime);
 }
 
 EMSCRIPTEN_BINDINGS(my_module) {

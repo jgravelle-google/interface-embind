@@ -12,18 +12,18 @@ run: out/simple.js
 	node out/simple.js
 .PHONY: run
 
-out/js_canvas.html: src/js_canvas.js src/js_canvas.html
+out/js_canvas.html: src/js_canvas.js src/js_canvas.html src/navbar.html
 	mkdir -p out/
 	cp src/js_canvas.js out/js_canvas.js
-	cp src/js_canvas.html out/js_canvas.html
+	cat src/js_canvas.html src/navbar.html > out/js_canvas.html
 
 serve:
 	/s/emscripten/emrun --no_browser --port 8080 out/
 .PHONY: serve
 
-out/embind_canvas.html: out/embind_canvas.wasm src/embind_canvas.html
+out/embind_canvas.html: out/embind_canvas.wasm src/embind_canvas.html src/navbar.html
 	mkdir -p out/
-	cp src/embind_canvas.html out/embind_canvas.html
+	cat src/embind_canvas.html src/navbar.html > out/embind_canvas.html
 
 out/embind_canvas.wasm: src/canvas.cpp src/canvas_pre.js
 	mkdir -p out/
