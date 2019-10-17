@@ -2,11 +2,11 @@ let lastTime = performance.now();
 let t = 0.0;
 
 function rects(ctx) {
-  ctx.fillStyle = 'rgb(200, 0, 0)'
+  ctx.fillStyle = 'rgb(200, 0, 0)';
   ctx.fillRect(10, 10, 200, 200);
-  ctx.fillStyle = '#11cc22'
+  ctx.fillStyle = '#11cc22';
   ctx.fillRect(40, 40, 160, 160);
-  ctx.fillStyle = 'blue'
+  ctx.fillStyle = 'blue';
   ctx.fillRect(70, 50, 120, 120);
 }
 
