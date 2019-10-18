@@ -26,6 +26,17 @@ DocumentElement document = EM_IMPORT_GLOBAL(DocumentElement, "document");
 struct JSObject {
 private: struct Impl; Impl* impl;
 };
+struct Uint8Array : public JSObject {
+  int get_length();
+  // int operator[](int, int);
+  void set(int, unsigned char);
+};
+struct ImageData : public JSObject {
+  static ImageData construct(double, double);
+  Uint8Array get_data();
+  int get_width();
+  int get_height();
+};
 struct CanvasRenderingContext2D: public JSObject {
   void clearRect(double, double, double, double);
 
@@ -43,6 +54,8 @@ struct CanvasRenderingContext2D: public JSObject {
   void moveTo(double, double);
   void lineTo(double, double);
   void stroke();
+
+  void putImageData(ImageData, double, double);
 };
 struct HTMLCanvasElement: public JSObject {
   CanvasRenderingContext2D getContext(char*);
@@ -118,22 +131,27 @@ void sines(CanvasRenderingContext2D &ctx) {
 }
 
 void naiveImage(CanvasRenderingContext2D &ctx) {
-  // val image = val::global("ImageData").new_(500, 200);
-  // int len = image["data"]["length"].as<int>();
-  // int imgWidth = image["width"].as<int>();
-  // int imgHeight = image["height"].as<int>();
-  // for (int i = 0; i < len; i += 4) {
-  //   int p = i / 4;
-  //   double x = p % imgWidth;
-  //   double y = (double)p / imgWidth;
-  //   double u = (double)x / imgWidth;
-  //   double v = (double)y / imgHeight;
-  //   image["data"].set(i + 0, 255 * abs(sin(t)) * u);
-  //   image["data"].set(i + 1, 255 * abs(cos(t)) * v);
-  //   image["data"].set(i + 2, 255 * (1.0 - u * v));
-  //   image["data"].set(i + 3, 255);
-  // }
-  // ctx.call<void>("putImageData", image, 260, 10);
+  auto image = ImageData::construct(500, 200);
+  Uint8Array data = image.get_data();
+  int len = data.get_length();
+  int imgWidth = image.get_width();
+  int imgHeight = image.get_height();
+  for (int i = 0; i < len; i += 4) {
+    int p = i / 4;
+    double x = p % imgWidth;
+    double y = (double)p / imgWidth;
+    double u = (double)x / imgWidth;
+    double v = (double)y / imgHeight;
+    data.set(i + 0, 255 * abs(sin(t)) * u);
+    data.set(i + 1, 255 * abs(cos(t)) * v);
+    data.set(i + 2, 255 * (1.0 - u * v));
+    data.set(i + 3, 255);
+    // data[i + 0] = 255 * abs(sin(t)) * u;
+    // data[i + 1] = 255 * abs(cos(t)) * v;
+    // data[i + 2] = 255 * (1.0 - u * v);
+    // data[i + 3] = 255;
+  }
+  ctx.putImageData(image, 260, 10);
 }
 
 void framerate(CanvasRenderingContext2D &ctx, double dT) {
@@ -156,7 +174,7 @@ void frame() {
 
   rects(ctx);
   sines(ctx);
-  // naiveImage(ctx);
+  naiveImage(ctx);
 
   double endTime = performance.now();
   framerate(ctx, endTime - startTime);

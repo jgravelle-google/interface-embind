@@ -15,9 +15,12 @@ async function loadWasm() {
   }
 
   // C++ -> JS
+  function idxToRef(idx) {
+    return refCache[idx];
+  }
   function ptrToRef(ptr) {
     const idx = i32[ptr >> 2];
-    return refCache[idx];
+    return idxToRef(idx);
   }
   function ptrToString(ptr) {
     let str = '';
@@ -33,6 +36,14 @@ async function loadWasm() {
         const name = ptrToString(namePtr);
         return refToIdx(window[name]);
       },
+      _ZN10Uint8Array10get_lengthEv(arrPtr) {
+        const arr = ptrToRef(arrPtr);
+        return arr.length;
+      },
+      _ZN10Uint8Array3setEih(arrPtr, idx, val) {
+        const arr = ptrToRef(arrPtr);
+        arr[idx] = val;
+      },
       _ZN11Performance3nowEv(perfPtr) {
         const perf = ptrToRef(perfPtr);
         return perf.now();
@@ -46,6 +57,11 @@ async function loadWasm() {
         const canvas = ptrToRef(canvasPtr);
         const id = ptrToString(idPtr);
         return refToIdx(canvas.getContext(id));
+      },
+      _ZN24CanvasRenderingContext2D12putImageDataE9ImageDatadd(ctxPtr, imgIdx, x, y) {
+        const ctx = ptrToRef(ctxPtr);
+        const img = idxToRef(imgIdx);
+        ctx.putImageData(img, x, y);
       },
       _ZN24CanvasRenderingContext2D13set_fillStyleEPc(ctxPtr, strPtr) {
         const ctx = ptrToRef(ctxPtr);
@@ -97,6 +113,22 @@ async function loadWasm() {
       _ZN24CanvasRenderingContext2D9translateEdd(ctxPtr, x, y) {
         const ctx = ptrToRef(ctxPtr);
         ctx.translate(x, y);
+      },
+      _ZN9ImageData9constructEdd(w, h) {
+        const image = new ImageData(w, h);
+        return refToIdx(image);
+      },
+      _ZN9ImageData10get_heightEv(imagePtr) {
+        const image = ptrToRef(imagePtr);
+        return image.height;
+      },
+      _ZN9ImageData8get_dataEv(imagePtr) {
+        const image = ptrToRef(imagePtr);
+        return refToIdx(image.data);
+      },
+      _ZN9ImageData9get_widthEv(imagePtr) {
+        const image = ptrToRef(imagePtr);
+        return image.width;
       },
     },
   };

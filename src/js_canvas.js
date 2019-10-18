@@ -38,16 +38,17 @@ function sines(ctx) {
 
 function image(ctx) {
   const img = new ImageData(500, 200);
-  for (let i = 0; i < img.data.length; i += 4) {
+  const data = img.data;
+  for (let i = 0; i < data.length; i += 4) {
     const p = i / 4;
     const x = p % img.width;
     const y = p / img.width;
     const u = x / img.width;
     const v = y / img.height;
-    img.data[i + 0] = 255 * Math.abs(Math.sin(t)) * u;
-    img.data[i + 1] = 255 * Math.abs(Math.cos(t)) * v;
-    img.data[i + 2] = 255 * (1.0 - u * v);
-    img.data[i + 3] = 255;
+    data[i + 0] = 255 * Math.abs(Math.sin(t)) * u;
+    data[i + 1] = 255 * Math.abs(Math.cos(t)) * v;
+    data[i + 2] = 255 * (1.0 - u * v);
+    data[i + 3] = 255;
   }
   ctx.putImageData(img, 260, 10);
 }
@@ -71,7 +72,8 @@ function frame() {
 
   rects(ctx);
   sines(ctx);
-  // image(ctx);
+  image(ctx);
+
   let endTime = performance.now();
   framerate(ctx, endTime - startTime);
 

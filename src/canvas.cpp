@@ -55,7 +55,8 @@ void sines(val ctx) {
 void naiveImage(val ctx) {
   // NOTE: very slow
   val image = val::global("ImageData").new_(500, 200);
-  int len = image["data"]["length"].as<int>();
+  val data = image["data"];
+  int len = data["length"].as<int>();
   int imgWidth = image["width"].as<int>();
   int imgHeight = image["height"].as<int>();
   for (int i = 0; i < len; i += 4) {
@@ -64,10 +65,10 @@ void naiveImage(val ctx) {
     double y = (double)p / imgWidth;
     double u = (double)x / imgWidth;
     double v = (double)y / imgHeight;
-    image["data"].set(i + 0, 255 * abs(sin(t)) * u);
-    image["data"].set(i + 1, 255 * abs(cos(t)) * v);
-    image["data"].set(i + 2, 255 * (1.0 - u * v));
-    image["data"].set(i + 3, 255);
+    data.set(i + 0, 255 * abs(sin(t)) * u);
+    data.set(i + 1, 255 * abs(cos(t)) * v);
+    data.set(i + 2, 255 * (1.0 - u * v));
+    data.set(i + 3, 255);
   }
   ctx.call<void>("putImageData", image, 260, 10);
 }
@@ -92,7 +93,8 @@ void frame() {
 
   rects(ctx);
   sines(ctx);
-  // naiveImage(ctx);
+  naiveImage(ctx);
+
   double endTime = val::global("performance").call<double>("now");
   framerate(ctx, endTime - startTime);
 }
