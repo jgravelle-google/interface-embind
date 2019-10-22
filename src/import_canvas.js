@@ -51,12 +51,14 @@ async function loadWasm() {
       _ZN15DocumentElement14getElementByIdEPc(docPtr, idPtr) {
         const doc = ptrToRef(docPtr);
         const id = ptrToString(idPtr);
-        return refToIdx(doc.getElementById(id));
+        const ret = Document.prototype.getElementById.apply(doc, [id]);
+        return refToIdx(ret);
       },
       _ZN17HTMLCanvasElement10getContextEPc(canvasPtr, idPtr) {
         const canvas = ptrToRef(canvasPtr);
         const id = ptrToString(idPtr);
-        return refToIdx(canvas.getContext(id));
+        const ret = HTMLCanvasElement.prototype.getContext.apply(canvas, [id]);
+        return refToIdx(ret);
       },
       _ZN24CanvasRenderingContext2D12putImageDataE9ImageDatadd(ctxPtr, imgIdx, x, y) {
         const ctx = ptrToRef(ctxPtr);
@@ -70,12 +72,12 @@ async function loadWasm() {
       },
       _ZN24CanvasRenderingContext2D8fillRectEdddd(ctxPtr, x, y, w, h) {
         const ctx = ptrToRef(ctxPtr);
-        ctx.fillRect(x, y, w, h);
+        CanvasRenderingContext2D.prototype.fillRect.apply(ctx, [x, y, w, h]);
       },
       _ZN24CanvasRenderingContext2D8fillTextEPcdd(ctxPtr, strPtr, x, y) {
         const ctx = ptrToRef(ctxPtr);
         const str = ptrToString(strPtr);
-        ctx.fillText(str, x, y);
+        CanvasRenderingContext2D.prototype.fillText.apply(ctx, [str, x, y]);
       },
       _ZN24CanvasRenderingContext2D8set_fontEPc(ctxPtr, strPtr) {
         const ctx = ptrToRef(ctxPtr);
@@ -84,39 +86,39 @@ async function loadWasm() {
       },
       _ZN24CanvasRenderingContext2D9clearRectEdddd(ctxPtr, x, y, w, h) {
         const ctx = ptrToRef(ctxPtr);
-        ctx.clearRect(x, y, w, h);
+        CanvasRenderingContext2D.prototype.clearRect.apply(ctx, [x, y, w, h]);
       },
       _ZN24CanvasRenderingContext2D4saveEv(ctxPtr) {
         const ctx = ptrToRef(ctxPtr);
-        ctx.save();
+        CanvasRenderingContext2D.prototype.save.apply(ctx, []);
       },
       _ZN24CanvasRenderingContext2D6lineToEdd(ctxPtr, x, y) {
         const ctx = ptrToRef(ctxPtr);
-        ctx.lineTo(x, y);
+        CanvasRenderingContext2D.prototype.lineTo.apply(ctx, [x, y]);
       },
       _ZN24CanvasRenderingContext2D6moveToEdd(ctxPtr, x, y) {
         const ctx = ptrToRef(ctxPtr);
-        ctx.moveTo(x, y);
+        CanvasRenderingContext2D.prototype.moveTo.apply(ctx, [x, y]);
       },
       _ZN24CanvasRenderingContext2D6strokeEv(ctxPtr) {
         const ctx = ptrToRef(ctxPtr);
-        ctx.stroke();
+        CanvasRenderingContext2D.prototype.stroke.apply(ctx, []);
       },
       _ZN24CanvasRenderingContext2D7restoreEv(ctxPtr) {
         const ctx = ptrToRef(ctxPtr);
-        ctx.restore();
+        CanvasRenderingContext2D.prototype.restore.apply(ctx, []);
       },
       _ZN24CanvasRenderingContext2D9beginPathEv(ctxPtr) {
         const ctx = ptrToRef(ctxPtr);
-        ctx.beginPath();
+        CanvasRenderingContext2D.prototype.beginPath.apply(ctx, []);
       },
       _ZN24CanvasRenderingContext2D9translateEdd(ctxPtr, x, y) {
         const ctx = ptrToRef(ctxPtr);
-        ctx.translate(x, y);
+        CanvasRenderingContext2D.prototype.translate.apply(ctx, [x, y]);
       },
       _ZN9ImageData9constructEdd(w, h) {
-        const image = new ImageData(w, h);
-        return refToIdx(image);
+        const ret = new ImageData(w, h);
+        return refToIdx(ret);
       },
       _ZN9ImageData10get_heightEv(imagePtr) {
         const image = ptrToRef(imagePtr);
