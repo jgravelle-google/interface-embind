@@ -30,7 +30,7 @@ out/embind_canvas.wasm: src/canvas.cpp src/canvas_pre.js out/
 	/s/wbin/wasm-dis out/embind_canvas.wasm -o out/embind_canvas.wat
 # 	/s/wbin/wasm-decompile out/embind_canvas.wasm -o out/embind_canvas.wade
 
-out/import_canvas.wasm: src/import_canvas.cpp out/
+out/import_canvas.wasm: src/import_canvas.cpp src/em_import.h out/
 	emcc src/import_canvas.cpp -o out/import_canvas.wasm --profiling-funcs -O2 -s ERROR_ON_UNDEFINED_SYMBOLS=0
 	/s/wbin/wasm-dis out/import_canvas.wasm -o out/import_canvas.wat
 	/s/wbin/wasm-decompile out/import_canvas.wasm -o out/import_canvas.wade

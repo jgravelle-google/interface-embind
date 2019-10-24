@@ -1,81 +1,60 @@
-// #include "em_import.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "em_import.h"
+
+using namespace emscripten;
+
 // Declarations
 
-// ideal API
-// EM_IMPORT_STRUCT: declares an external type and methods defined on it
-/*
-EM_IMPORT_STRUCT("CanvasRenderingContext2D", CanvasRenderingContext2D, {
-  EM_IMPORT_METHOD("fillRect", void, fillRect, double, double, double, double);
-  EM_IMPORT_FIELD("fillStyle", std::string, fillStyle);
-});
-EM_IMPORT_STRUCT("HTMLCanvasElement", HTMLCanvasElement, {
-  EM_IMPORT_METHOD("getContext", CanvasRenderingContext2D, getContext, std::string);
-});
-EM_IMPORT_STRUCT("Document", DocumentElement, {
-  EM_IMPORT_METHOD("getElementById", HTMLCanvasElement, getElementById, std::string);
-});
-
-DocumentElement document = EM_IMPORT_GLOBAL(DocumentElement, "document");
-*/
-
-// hacked API
-struct JSObject {
-private: struct Impl; Impl* impl;
-};
-struct Uint8Array : public JSObject {
-  int get_length();
+EM_IMPORT_STRUCT("Uint8Array", Uint8Array, {
+  EM_IMPORT_FIELD_GETTER("length", int, length);
+  // ??? need to figure out how to map this to sequences, might just be a
+  // special-case builtin
   // int operator[](int, int);
   void set(int, unsigned char);
-};
-struct ImageData : public JSObject {
+});
+
+EM_IMPORT_STRUCT("ImageData", ImageData, {
   static ImageData construct(double, double);
-  Uint8Array get_data();
-  int get_width();
-  int get_height();
-};
-struct CanvasRenderingContext2D: public JSObject {
-  void clearRect(double, double, double, double);
+  EM_IMPORT_FIELD_GETTER("data", Uint8Array, data);
+  EM_IMPORT_FIELD_GETTER("width", int, width);
+  EM_IMPORT_FIELD_GETTER("height", int, height);
+});
 
-  void set_fillStyle(char*);
-  void fillRect(double, double, double, double);
+EM_IMPORT_STRUCT("CanvasRenderingContext2D", CanvasRenderingContext2D, {
+  EM_IMPORT_METHOD("clearRect", void, clearRect, double, double, double, double);
 
-  void set_font(char*);
-  void fillText(char*, double, double);
+  EM_IMPORT_FIELD_SETTER("fillStyle", char*, fillStyle);
+  EM_IMPORT_METHOD("fillRect", void, fillRect, double, double, double, double);
 
-  void save();
-  void restore();
-  void translate(double, double);
+  EM_IMPORT_FIELD_SETTER("font", char*, font);
+  EM_IMPORT_METHOD("fillText", void, fillText, char*, double, double);
 
-  void beginPath();
-  void moveTo(double, double);
-  void lineTo(double, double);
-  void stroke();
+  EM_IMPORT_METHOD("save", void, save);
+  EM_IMPORT_METHOD("restore", void, restore);
+  EM_IMPORT_METHOD("translate", void, translate, double, double);
 
-  void putImageData(ImageData, double, double);
-};
-struct HTMLCanvasElement: public JSObject {
-  CanvasRenderingContext2D getContext(char*);
-};
-struct DocumentElement: public JSObject {
-  HTMLCanvasElement getElementById(char*);
-};
-struct Performance: public JSObject {
-  double now();
-};
+  EM_IMPORT_METHOD("beginPath", void, beginPath);
+  EM_IMPORT_METHOD("moveTo", void, moveTo, double, double);
+  EM_IMPORT_METHOD("lineTo", void, lineTo, double, double);
+  EM_IMPORT_METHOD("stroke", void, stroke);
 
-extern DocumentElement getDocument();
-extern JSObject getGlobal(char*);
+  EM_IMPORT_METHOD("putImageData", void, putImageData, ImageData, double, double);
+});
 
-template <typename T> T upcast(JSObject &&obj) {
-  return *(T*)(void*)&obj;
-}
-template <typename T> T getGlobal(char* name) {
-  return upcast<T>(getGlobal(name));
-}
+EM_IMPORT_STRUCT("HTMLCanvasElement", HTMLCanvasElement, {
+  EM_IMPORT_METHOD("getContext", CanvasRenderingContext2D, getContext, char*);
+});
+
+EM_IMPORT_STRUCT("Document", DocumentElement, {
+  EM_IMPORT_METHOD("getElementById", HTMLCanvasElement, getElementById, char*);
+});
+
+EM_IMPORT_STRUCT("Performance", Performance, {
+  EM_IMPORT_METHOD("now", double, now);
+});
 
 // Body
 
