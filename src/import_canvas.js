@@ -116,17 +116,17 @@ async function loadWasm() {
         const ctx = ptrToRef(ctxPtr);
         CanvasRenderingContext2D.prototype.translate.apply(ctx, [x, y]);
       },
-      _ZN9ImageData9constructEdd(w, h) {
+      _ZN9ImageData4new_Edd(retPtr, w, h) {
         const ret = new ImageData(w, h);
-        return refToIdx(ret);
+        i32[retPtr] = refToIdx(ret);
       },
       _ZN9ImageData10get_heightEv(imagePtr) {
         const image = ptrToRef(imagePtr);
         return image.height;
       },
-      _ZN9ImageData8get_dataEv(imagePtr) {
+      _ZN9ImageData8get_dataEv(retPtr, imagePtr) {
         const image = ptrToRef(imagePtr);
-        return refToIdx(image.data);
+        i32[retPtr] = refToIdx(image.data);
       },
       _ZN9ImageData9get_widthEv(imagePtr) {
         const image = ptrToRef(imagePtr);

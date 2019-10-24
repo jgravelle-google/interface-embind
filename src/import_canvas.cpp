@@ -1,4 +1,5 @@
 // #include "em_import.h"
+#include <functional>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,19 +24,71 @@ DocumentElement document = EM_IMPORT_GLOBAL(DocumentElement, "document");
 */
 
 // hacked API
-struct JSObject {
-private: struct Impl; Impl* impl;
+// template <typename T>
+// struct JSField {
+//   JSField(std::function<T&> f) : accessor(f) {}
+//   operator T&() {
+//     return accessor();
+//   }
+//   JSField operator=(T& val) {
+//     accessor() = val;
+//     return *this;
+//   }
+// private:
+//   std::function<T&> accessor;
+// };
+// template <typename T>
+// JSField<T> jsField(T& val) {
+//   auto f = [&]() { return val; };
+//   return JSField<T>(f);
+// }
+
+class JSObject {
+  struct Impl; Impl* impl;
+public:
+  template <typename T>
+  class Field {
+    // JSObject* self;
+    // using Get = T(JSObject::*)();
+    // using Set = void(JSObject::*)(T);
+    using Get = std::function<T()>;
+    using Set = std::function<void(T)>;
+    Get getter;
+    Set setter;
+  public:
+    Field(JSObject* obj, Get get, Set set)
+        : getter(get), setter(set) {}
+    operator T() {
+      return getter();
+    }
+    Field operator=(T val) {
+      setter(val);
+      return *this;
+    }
+  };
 };
 struct Uint8Array : public JSObject {
+  Uint8Array() :
+    length(this,
+      [&](){ return get_length(); },
+      nullptr)
+  {}
+  Field<int> length;
   int get_length();
   // int operator[](int, int);
   void set(int, unsigned char);
 };
 struct ImageData : public JSObject {
-  static ImageData construct(double, double);
-  Uint8Array get_data();
+  ImageData() :
+    width(this, [&]() { return get_width(); }, nullptr),
+    height(this, [&]() { return get_height(); }, nullptr)
+  {}
+  Field<int> width;
+  Field<int> height;
   int get_width();
   int get_height();
+  static ImageData new_(double, double);
+  Uint8Array get_data();
 };
 struct CanvasRenderingContext2D: public JSObject {
   void clearRect(double, double, double, double);
@@ -70,10 +123,12 @@ struct Performance: public JSObject {
 extern DocumentElement getDocument();
 extern JSObject getGlobal(char*);
 
-template <typename T> T upcast(JSObject &&obj) {
+template <typename T>
+T upcast(JSObject &&obj) {
   return *(T*)(void*)&obj;
 }
-template <typename T> T getGlobal(char* name) {
+template <typename T>
+T getGlobal(char* name) {
   return upcast<T>(getGlobal(name));
 }
 
@@ -131,7 +186,7 @@ void sines(CanvasRenderingContext2D &ctx) {
 }
 
 void naiveImage(CanvasRenderingContext2D &ctx) {
-  auto image = ImageData::construct(500, 200);
+  auto image = ImageData::new_(500, 200);
   Uint8Array data = image.get_data();
   int len = data.get_length();
   int imgWidth = image.get_width();
