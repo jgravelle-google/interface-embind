@@ -10,8 +10,9 @@ private: struct Impl; Impl* impl;
 #define EM_IMPORT_STRUCT(importName, cppName, body) \
   struct cppName : public JSObject body;
 
-#define EM_IMPORT_METHOD(importName, retTy, name, ...) \
-  retTy name(__VA_ARGS__);
+#define EM_IMPORT_METHOD(proto, import, retTy, name, ...) \
+  __attribute__((annotate("EM_IMPORT"))) \
+  retTy name(__VA_ARGS__) __asm__("__em_import_" proto "_" import);
 
 #define EM_IMPORT_FIELD_GETTER(importName, ty, name) \
   ty get_ ## name();

@@ -32,7 +32,7 @@ async function loadWasm() {
   }
   const imports = {
     env: {
-      _Z9getGlobalPc(namePtr) {
+      _ZN10emscripten9getGlobalEPc(namePtr) {
         const name = ptrToString(namePtr);
         return refToIdx(window[name]);
       },
@@ -46,7 +46,7 @@ async function loadWasm() {
       },
       _ZN11Performance3nowEv(perfPtr) {
         const perf = ptrToRef(perfPtr);
-        return perf.now();
+        return Performance.prototype.now.apply(perf, []);
       },
       _ZN15DocumentElement14getElementByIdEPc(docPtr, idPtr) {
         const doc = ptrToRef(docPtr);

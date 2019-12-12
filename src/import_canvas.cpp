@@ -24,36 +24,50 @@ EM_IMPORT_STRUCT("ImageData", ImageData, {
 });
 
 EM_IMPORT_STRUCT("CanvasRenderingContext2D", CanvasRenderingContext2D, {
-  EM_IMPORT_METHOD("clearRect", void, clearRect, double, double, double, double);
+  EM_IMPORT_METHOD("CanvasRenderingContext2D", "clearRect",
+    void, clearRect, double, double, double, double);
 
   EM_IMPORT_FIELD_SETTER("fillStyle", char*, fillStyle);
-  EM_IMPORT_METHOD("fillRect", void, fillRect, double, double, double, double);
+  EM_IMPORT_METHOD("CanvasRenderingContext2D", "fillRect",
+    void, fillRect, double, double, double, double);
 
   EM_IMPORT_FIELD_SETTER("font", char*, font);
-  EM_IMPORT_METHOD("fillText", void, fillText, char*, double, double);
+  EM_IMPORT_METHOD("CanvasRenderingContext2D", "fillText",
+    void, fillText, char*, double, double);
 
-  EM_IMPORT_METHOD("save", void, save);
-  EM_IMPORT_METHOD("restore", void, restore);
-  EM_IMPORT_METHOD("translate", void, translate, double, double);
+  EM_IMPORT_METHOD("CanvasRenderingContext2D", "save",
+    void, save);
+  EM_IMPORT_METHOD("CanvasRenderingContext2D", "restore",
+    void, restore);
+  EM_IMPORT_METHOD("CanvasRenderingContext2D", "translate",
+    void, translate, double, double);
 
-  EM_IMPORT_METHOD("beginPath", void, beginPath);
-  EM_IMPORT_METHOD("moveTo", void, moveTo, double, double);
-  EM_IMPORT_METHOD("lineTo", void, lineTo, double, double);
-  EM_IMPORT_METHOD("stroke", void, stroke);
+  EM_IMPORT_METHOD("CanvasRenderingContext2D", "beginPath",
+    void, beginPath);
+  EM_IMPORT_METHOD("CanvasRenderingContext2D", "moveTo",
+    void, moveTo, double, double);
+  EM_IMPORT_METHOD("CanvasRenderingContext2D", "lineTo",
+    void, lineTo, double, double);
+  EM_IMPORT_METHOD("CanvasRenderingContext2D", "stroke",
+    void, stroke);
 
-  EM_IMPORT_METHOD("putImageData", void, putImageData, ImageData, double, double);
+  EM_IMPORT_METHOD("CanvasRenderingContext2D", "putImageData",
+    void, putImageData, ImageData, double, double);
 });
 
 EM_IMPORT_STRUCT("HTMLCanvasElement", HTMLCanvasElement, {
-  EM_IMPORT_METHOD("getContext", CanvasRenderingContext2D, getContext, char*);
+  EM_IMPORT_METHOD("HTMLCanvasElement", "getContext",
+    CanvasRenderingContext2D, getContext, char*);
 });
 
 EM_IMPORT_STRUCT("Document", DocumentElement, {
-  EM_IMPORT_METHOD("getElementById", HTMLCanvasElement, getElementById, char*);
+  EM_IMPORT_METHOD("Document", "getElementById",
+    HTMLCanvasElement, getElementById, char*);
 });
 
 EM_IMPORT_STRUCT("Performance", Performance, {
-  EM_IMPORT_METHOD("now", double, now);
+  EM_IMPORT_METHOD("Performance", "now",
+    double, now);
 });
 
 // Body
