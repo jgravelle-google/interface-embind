@@ -17,57 +17,44 @@ EM_IMPORT_STRUCT("Uint8Array", Uint8Array, {
 });
 
 EM_IMPORT_STRUCT("ImageData", ImageData, {
-  static ImageData construct(double, double);
+  EM_IMPORT_CONSTRUCTOR ImageData(double, double);
   EM_IMPORT_FIELD_GETTER("data", Uint8Array, data);
   EM_IMPORT_FIELD_GETTER("width", int, width);
   EM_IMPORT_FIELD_GETTER("height", int, height);
 });
 
+typedef double foo; // TODO: This should resolve to "double" in the bindings
 EM_IMPORT_STRUCT("CanvasRenderingContext2D", CanvasRenderingContext2D, {
-  EM_IMPORT_METHOD("CanvasRenderingContext2D", "clearRect",
-    void, clearRect, double, double, double, double);
+  EM_IMPORT_METHOD("clearRect") void clearRect(double, double, double, double);
 
   EM_IMPORT_FIELD_SETTER("fillStyle", char*, fillStyle);
-  EM_IMPORT_METHOD("CanvasRenderingContext2D", "fillRect",
-    void, fillRect, double, double, double, double);
+  EM_IMPORT_METHOD("fillRect") void fillRect(double, double, double, double);
 
   EM_IMPORT_FIELD_SETTER("font", char*, font);
-  EM_IMPORT_METHOD("CanvasRenderingContext2D", "fillText",
-    void, fillText, char*, double, double);
+  EM_IMPORT_METHOD("fillText") void fillText(char*, double, double);
 
-  EM_IMPORT_METHOD("CanvasRenderingContext2D", "save",
-    void, save);
-  EM_IMPORT_METHOD("CanvasRenderingContext2D", "restore",
-    void, restore);
-  EM_IMPORT_METHOD("CanvasRenderingContext2D", "translate",
-    void, translate, double, double);
+  EM_IMPORT_METHOD("save") void save();
+  EM_IMPORT_METHOD("restore") void restore();
+  EM_IMPORT_METHOD("translate") void translate(double, double);
 
-  EM_IMPORT_METHOD("CanvasRenderingContext2D", "beginPath",
-    void, beginPath);
-  EM_IMPORT_METHOD("CanvasRenderingContext2D", "moveTo",
-    void, moveTo, double, double);
-  EM_IMPORT_METHOD("CanvasRenderingContext2D", "lineTo",
-    void, lineTo, double, double);
-  EM_IMPORT_METHOD("CanvasRenderingContext2D", "stroke",
-    void, stroke);
+  EM_IMPORT_METHOD("beginPath") void beginPath();
+  EM_IMPORT_METHOD("moveTo") void moveTo(foo, double);
+  EM_IMPORT_METHOD("lineTo") void lineTo(double, foo);
+  EM_IMPORT_METHOD("stroke") void stroke();
 
-  EM_IMPORT_METHOD("CanvasRenderingContext2D", "putImageData",
-    void, putImageData, ImageData, double, double);
+  EM_IMPORT_METHOD("putImageData") void putImageData(ImageData, double, double);
 });
 
 EM_IMPORT_STRUCT("HTMLCanvasElement", HTMLCanvasElement, {
-  EM_IMPORT_METHOD("HTMLCanvasElement", "getContext",
-    CanvasRenderingContext2D, getContext, char*);
+  EM_IMPORT_METHOD("getContext") CanvasRenderingContext2D getContext(char*);
 });
 
 EM_IMPORT_STRUCT("Document", DocumentElement, {
-  EM_IMPORT_METHOD("Document", "getElementById",
-    HTMLCanvasElement, getElementById, char*);
+  EM_IMPORT_METHOD("getElementById") HTMLCanvasElement getElementById(char*);
 });
 
 EM_IMPORT_STRUCT("Performance", Performance, {
-  EM_IMPORT_METHOD("Performance", "now",
-    double, now);
+  EM_IMPORT_METHOD("now") double now();
 });
 
 // Body
@@ -124,7 +111,7 @@ void sines(CanvasRenderingContext2D &ctx) {
 }
 
 void naiveImage(CanvasRenderingContext2D &ctx) {
-  auto image = ImageData::construct(500, 200);
+  auto image = ImageData(500, 200);
   Uint8Array data = image.get_data();
   int len = data.get_length();
   int imgWidth = image.get_width();

@@ -6,23 +6,31 @@ struct JSObject {
 private: struct Impl; Impl* impl;
 };
 
+#define EM_IMPORT_FUNC(name) \
+  __attribute__((annotate("EM_IMPORT:func:" name)))
+
 // EM_IMPORT_STRUCT: declares an external type and methods defined on it
 #define EM_IMPORT_STRUCT(importName, cppName, body) \
-  struct cppName : public JSObject body;
+  struct __attribute__((annotate("EM_IMPORT:struct:" importName))) \
+  cppName : public JSObject body;
 
-#define EM_IMPORT_METHOD(proto, import, retTy, name, ...) \
-  __attribute__((annotate("EM_IMPORT"))) \
-  retTy name(__VA_ARGS__) __asm__("__em_import_" proto "_" import);
+#define EM_IMPORT_CONSTRUCTOR \
+  __attribute__((annotate("EM_IMPORT:constructor")))
+
+#define EM_IMPORT_METHOD(name) \
+  __attribute__((annotate("EM_IMPORT:method:" name)))
 
 #define EM_IMPORT_FIELD_GETTER(importName, ty, name) \
+  __attribute__((annotate("EM_IMPORT:get:" importName))) \
   ty get_ ## name();
 #define EM_IMPORT_FIELD_SETTER(importName, ty, name) \
+  __attribute__((annotate("EM_IMPORT:set:" importName))) \
   void set_ ## name(ty);
 #define EM_IMPORT_FIELD(importName, ty, name) \
   EM_IMPORT_FIELD_GETTER(importName, ty, name); \
   EM_IMPORT_FIELD_SETTER(importName, ty, name);
 
-extern JSObject getGlobal(char*);
+EM_IMPORT_FUNC("jsGetGlobal") JSObject getGlobal(char*);
 
 template <typename T> T upcast(JSObject &&obj) {
   return *(T*)(void*)&obj;
