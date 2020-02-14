@@ -16,6 +16,16 @@ EM_IMPORT_STRUCT("Uint8Array", Uint8Array, {
   void set(int, unsigned char);
 });
 
+/*
+
+#include "ImageData.h"
+#include "CanvasRenderingContext2D.h"
+#include "HTMLCanvasElement.h"
+#include "Document.h"
+#include "Performance.h"
+
+/*/
+
 EM_IMPORT_STRUCT("ImageData", ImageData, {
   EM_IMPORT_CONSTRUCTOR ImageData(double, double);
   EM_IMPORT_FIELD_GETTER("data", Uint8Array, data);
@@ -49,13 +59,15 @@ EM_IMPORT_STRUCT("HTMLCanvasElement", HTMLCanvasElement, {
   EM_IMPORT_METHOD("getContext") CanvasRenderingContext2D getContext(char*);
 });
 
-EM_IMPORT_STRUCT("Document", DocumentElement, {
+EM_IMPORT_STRUCT("Document", Document, {
   EM_IMPORT_METHOD("getElementById") HTMLCanvasElement getElementById(char*);
 });
 
 EM_IMPORT_STRUCT("Performance", Performance, {
   EM_IMPORT_METHOD("now") double now();
 });
+
+//*/
 
 // Body
 
@@ -66,9 +78,9 @@ double t = 0.0;
 
 __attribute__((used))
 void init() {
-  auto document = getGlobal<DocumentElement>("document");
-  HTMLCanvasElement canvas = document.getElementById("canvas");
-  ctx = canvas.getContext("2d");
+  auto document = getGlobal<Document>("document");
+  auto canvas = upcast<HTMLCanvasElement>(document.getElementById("canvas"));
+  ctx = upcast<CanvasRenderingContext2D>(canvas.getContext("2d", JSObject()));
 
   performance = getGlobal<Performance>("performance");
   lastTime = performance.now();
@@ -134,11 +146,14 @@ void naiveImage(CanvasRenderingContext2D &ctx) {
   ctx.putImageData(image, 260, 10);
 }
 
+double avgTime = 0.0;
 void framerate(CanvasRenderingContext2D &ctx, double dT) {
   ctx.set_font("20px sans");
   ctx.set_fillStyle("#444444");
+  avgTime *= 0.9;
+  avgTime += dT * 0.1;
   char *msg = (char*)alloca(256);
-  int us = 1000.0 * dT;
+  int us = 1000.0 * avgTime;
   snprintf(msg, 256, "Frame time: %dus", us);
   ctx.fillText(msg, 560, 585);
 }

@@ -73,11 +73,14 @@ void naiveImage(val ctx) {
   ctx.call<void>("putImageData", image, 260, 10);
 }
 
+double avgTime = 0.0;
 void framerate(val ctx, double dT) {
   ctx.set("font", val("20px sans"));
   ctx.set("fillStyle", val("#444444"));
+  avgTime *= 0.9;
+  avgTime += dT * 0.1;
   char *msg = (char*)alloca(256);
-  int us = 1000.0 * dT;
+  int us = 1000.0 * avgTime;
   snprintf(msg, 256, "Frame time: %dus", us);
   ctx.call<void>("fillText", val(std::string(msg)), 560, 585);
   // free(msg);

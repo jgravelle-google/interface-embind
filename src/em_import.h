@@ -3,7 +3,17 @@
 namespace emscripten {
 
 struct JSObject {
-private: struct Impl; Impl* impl;
+private:
+  // PIMPL pattern; no actual Impl class exists, but this allocates a pointer
+  // that we can use for nefarious purposes.
+  struct Impl; Impl* impl;
+  void setImplToStr(const char*);
+
+public:
+  JSObject() = default;
+  JSObject(const char* str) {
+    setImplToStr(str);
+  }
 };
 
 #define EM_IMPORT_FUNC(name) \

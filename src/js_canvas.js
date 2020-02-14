@@ -53,10 +53,13 @@ function image(ctx) {
   ctx.putImageData(img, 260, 10);
 }
 
+var avgTime = 0.0;
 function framerate(ctx, dT) {
   ctx.font = '20px sans';
   ctx.fillStyle = '#444444';
-  const us = (dT * 1000) | 0;
+  avgTime *= 0.9;
+  avgTime += dT * 0.1;
+  const us = (avgTime * 1000) | 0;
   ctx.fillText('Frame time: ' + us + 'us', 560, 585)
 }
 

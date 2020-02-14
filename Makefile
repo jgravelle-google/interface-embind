@@ -31,8 +31,11 @@ out/embind_canvas.wasm: src/canvas.cpp src/canvas_pre.js out/
 # 	/s/wbin/wasm-decompile out/embind_canvas.wasm -o out/embind_canvas.wade
 
 out/import_canvas.wasm: src/import_canvas.cpp src/em_import.h out/
-	emcc src/import_canvas.cpp -o out/import_canvas.o --profiling-funcs -O2 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -std=c++11 -Wno-writable-strings
-	emcc out/import_canvas.o -o out/import_canvas.js --profiling-funcs -O1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -std=c++11 -Wno-writable-strings
+	emcc src/import_canvas.cpp -o out/import_canvas.o --profiling-funcs -O2 \
+		-s ERROR_ON_UNDEFINED_SYMBOLS=0 -std=c++11 -Wno-writable-strings \
+		-I../em-sys/out/ -Isrc/
+	emcc out/import_canvas.o -o out/import_canvas.js --profiling-funcs -O1 \
+		-s ERROR_ON_UNDEFINED_SYMBOLS=0 -std=c++11 -Wno-writable-strings
 # 	/s/wbin/wasm-dis out/import_canvas.o -o out/import_canvas.o.wat
 # 	/s/wbin/wasm-dis out/import_canvas.wasm -o out/import_canvas.wat
 	/s/wbin/wasm-decompile out/import_canvas.wasm -o out/import_canvas.wade
@@ -40,7 +43,7 @@ out/import_canvas.wasm: src/import_canvas.cpp src/em_import.h out/
 out/import_canvas_loader.js: src/import_canvas.js
 	cp src/import_canvas.js out/import_canvas_loader.js
 
-out/import_canvas.html: out/import_canvas.wasm out/import_canvas_loader.js\
+out/import_canvas.html: out/import_canvas.wasm out/import_canvas_loader.js \
 		src/import_canvas.html src/navbar.html
 	cat src/import_canvas.html src/navbar.html > out/import_canvas.html
 
