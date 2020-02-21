@@ -40,7 +40,7 @@ public:
   EM_IMPORT_FIELD_GETTER(importName, ty, name); \
   EM_IMPORT_FIELD_SETTER(importName, ty, name);
 
-EM_IMPORT_FUNC("jsGetGlobal") JSObject getGlobal(char*);
+EM_IMPORT_FUNC("jsGetGlobal") JSObject getGlobal(const char*);
 
 template <typename T> T upcast(JSObject &&obj) {
   return *(T*)(void*)&obj;

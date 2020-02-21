@@ -48,8 +48,8 @@ EM_IMPORT_STRUCT("CanvasRenderingContext2D", CanvasRenderingContext2D, {
   EM_IMPORT_METHOD("translate") void translate(double, double);
 
   EM_IMPORT_METHOD("beginPath") void beginPath();
-  EM_IMPORT_METHOD("moveTo") void moveTo(foo, double);
-  EM_IMPORT_METHOD("lineTo") void lineTo(double, foo);
+  EM_IMPORT_METHOD("moveTo") void moveTo(double, double);
+  EM_IMPORT_METHOD("lineTo") void lineTo(double, double);
   EM_IMPORT_METHOD("stroke") void stroke();
 
   EM_IMPORT_METHOD("putImageData") void putImageData(ImageData, double, double);

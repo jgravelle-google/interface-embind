@@ -14,6 +14,12 @@ run: out/simple.js
 	node out/simple.js
 .PHONY: run
 
+test:
+	ninja -C /s/emscripten/tools/em-import/build/
+	make out/hello_em_import.wasm
+	node out/hello_em_import.js
+.PHONY: test
+
 out/js_canvas.html: src/js_canvas.js src/js_canvas.html src/navbar.html out/
 	cp src/js_canvas.js out/js_canvas.js
 	cat src/js_canvas.html src/navbar.html > out/js_canvas.html
@@ -39,6 +45,11 @@ out/import_canvas.wasm: src/import_canvas.cpp src/em_import.h out/
 # 	/s/wbin/wasm-dis out/import_canvas.o -o out/import_canvas.o.wat
 # 	/s/wbin/wasm-dis out/import_canvas.wasm -o out/import_canvas.wat
 	/s/wbin/wasm-decompile out/import_canvas.wasm -o out/import_canvas.wade
+
+out/hello_em_import.wasm: src/hello_em_import.cpp src/em_import.h out/
+	emcc src/hello_em_import.cpp -o out/hello_em_import.js --profiling-funcs -O2 \
+		-s ERROR_ON_UNDEFINED_SYMBOLS=0 -std=c++11 -Wno-writable-strings \
+		-I../em-sys/out/ -Isrc/
 
 out/import_canvas_loader.js: src/import_canvas.js
 	cp src/import_canvas.js out/import_canvas_loader.js
