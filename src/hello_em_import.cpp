@@ -1,4 +1,4 @@
-#include "em_import.h"
+#include "emscripten/em_import.h"
 
 using namespace emscripten;
 
